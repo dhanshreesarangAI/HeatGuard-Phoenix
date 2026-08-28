@@ -1,0 +1,79 @@
+import streamlit as st
+import pandas as pd
+import folium
+from streamlit_folium import st_folium
+
+st.set_page_config(page_title="HeatGuard Phoenix", page_icon="🌡️", layout="wide")
+
+# Load data
+df = pd.read_csv("phoenix_heat_data_with_risk.csv")
+
+# Area coordinates (center points for map)
+AREA_COORDS = {
+    "Downtown Phoenix": [33.4475, -112.0775],
+    "Scottsdale": [33.4975, -111.9225],
+    "Tempe": [33.4225, -111.9375],
+    "Mesa": [33.4175, -111.8275],
+    "Glendale": [33.5425, -112.1875]
+}
+
+# Risk level colors
+RISK_COLORS = {
+    "Low": "green",
+    "Medium": "orange",
+    "High": "red",
+    "Extreme": "darkred"
+}
+
+# Header
+st.title("🌡️ HeatGuard Phoenix")
+st.markdown("### AI-Powered Hyperlocal Heat Risk Prediction for Phoenix, Arizona")
+st.markdown("---")
+
+# Layout: two columns
+col1, col2 = st.columns([1, 1.5])
+
+with col1:
+    st.subheader("Select an Area")
+    selected_area = st.selectbox("Choose a Phoenix area:", df["area"].tolist())
+    
+    row = df[df["area"] == selected_area].iloc[0]
+    
+    st.metric("Current Temperature", f"{row['avg_temp']:.1f}°C")
+    
+    risk_color = {"Low": "🟢", "Medium": "🟡", "High": "🟠", "Extreme": "🔴"}
+    st.markdown(f"### Risk Level: {risk_color[row['risk_level']]} {row['risk_level']}")
+    
+    st.info(f"**AI Recommendation:**\n\n{row['recommendation']}")
+    
+    st.markdown("---")
+    st.subheader("All Areas Overview")
+    st.dataframe(df[["area", "avg_temp", "risk_level"]], hide_index=True)
+
+with col2:
+    st.subheader("Phoenix Heat Risk Map")
+    
+    # Create map centered on Phoenix
+    m = folium.Map(location=[33.45, -112.0], zoom_start=10)
+    
+    for _, area_row in df.iterrows():
+        area_name = area_row["area"]
+        coords = AREA_COORDS[area_name]
+        risk = area_row["risk_level"]
+        temp = area_row["avg_temp"]
+        
+        folium.CircleMarker(
+            location=coords,
+            radius=20,
+            popup=f"{area_name}: {temp:.1f}°C ({risk} Risk)",
+            tooltip=area_name,
+            color=RISK_COLORS[risk],
+            fill=True,
+            fillColor=RISK_COLORS[risk],
+            fillOpacity=0.7
+        ).add_to(m)
+    
+    st_folium(m, width=700, height=500)
+
+st.markdown("---")
+st.caption("Data powered by FortyGuard Temperature API | Built for FortyGuard Hackathon '26")
