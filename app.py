@@ -44,7 +44,30 @@ with col1:
     risk_color = {"Low": "🟢", "Medium": "🟡", "High": "🟠", "Extreme": "🔴"}
     st.markdown(f"### Risk Level: {risk_color[row['risk_level']]} {row['risk_level']}")
     
-    st.info(f"**AI Recommendation:**\n\n{row['recommendation']}")
+    st.info(f"**AI Recommendation:**\n\n{row['recommendation']}")    # Explanation section
+    st.markdown("---")
+    st.subheader("Why This Risk Level?")
+    
+    avg_city_temp = df["avg_temp"].mean()
+    temp_diff = row["avg_temp"] - avg_city_temp
+    
+    if temp_diff > 0.1:
+        comparison = f"This area is **{temp_diff:.1f}°C hotter** than the Phoenix city average ({avg_city_temp:.1f}°C)."
+    elif temp_diff < -0.1:
+        comparison = f"This area is **{abs(temp_diff):.1f}°C cooler** than the Phoenix city average ({avg_city_temp:.1f}°C)."
+    else:
+        comparison = f"This area is close to the Phoenix city average ({avg_city_temp:.1f}°C)."
+    
+    st.write(comparison)
+    
+    explanation_map = {
+        "Low": "Temperature is within a safe range for most outdoor activities.",
+        "Medium": "Temperature is elevated enough to require basic precautions during peak sun hours.",
+        "High": "Temperature poses a real health risk during midday hours, especially for vulnerable groups.",
+        "Extreme": "Temperature has reached dangerous levels — heat-related illness risk is significant even for short outdoor exposure."
+    }
+    
+    st.write(f"**Risk basis:** {explanation_map[row['risk_level']]}")
     
     st.markdown("---")
     st.subheader("All Areas Overview")
