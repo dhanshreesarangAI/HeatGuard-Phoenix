@@ -44,7 +44,29 @@ with col1:
     risk_color = {"Low": "🟢", "Medium": "🟡", "High": "🟠", "Extreme": "🔴"}
     st.markdown(f"### Risk Level: {risk_color[row['risk_level']]} {row['risk_level']}")
     
-    st.info(f"**AI Recommendation:**\n\n{row['recommendation']}")    # Explanation section
+    st.info(f"**AI Recommendation:**\n\n{row['recommendation']}")
+
+    # Next 3 hours forecast
+    st.markdown("---")
+    st.subheader("Next 3 Hours Forecast")
+    
+    current_hour = 14
+    forecast_hours = [15, 16, 17]
+    predicted_temps = []
+    for h in forecast_hours:
+        if h <= 16:
+            temp_change = 0.3 * (h - current_hour)
+        else:
+            temp_change = 0.6 - 0.4 * (h - 16)
+        predicted_temps.append(row["avg_temp"] + temp_change)
+    
+    forecast_cols = st.columns(3)
+    for i, (h, t) in enumerate(zip(forecast_hours, predicted_temps)):
+        with forecast_cols[i]:
+            time_label = f"{h-12}:00 PM"
+            st.metric(time_label, f"{t:.1f}°C")
+
+    # Explanation section   # Explanation section
     st.markdown("---")
     st.subheader("Why This Risk Level?")
     
