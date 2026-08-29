@@ -85,16 +85,25 @@ with col2:
         risk = area_row["risk_level"]
         temp = area_row["avg_temp"]
         
+        is_selected = (area_name == selected_area)
+        
         folium.CircleMarker(
             location=coords,
-            radius=20,
+            radius=30 if is_selected else 18,
             popup=f"{area_name}: {temp:.1f}°C ({risk} Risk)",
             tooltip=area_name,
-            color=RISK_COLORS[risk],
+            color="blue" if is_selected else RISK_COLORS[risk],
+            weight=4 if is_selected else 2,
             fill=True,
             fillColor=RISK_COLORS[risk],
-            fillOpacity=0.7
+            fillOpacity=0.9 if is_selected else 0.6
         ).add_to(m)
+        
+        if is_selected:
+            folium.map.Marker(
+                coords,
+                icon=folium.DivIcon(html=f'<div style="font-size: 24px;">📍</div>')
+            ).add_to(m)
     
     st_folium(m, width=700, height=500)
 
