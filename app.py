@@ -8,6 +8,10 @@ st.markdown("""
     <style>
     .main {
         padding-top: 1rem;
+    }  
+    .stApp {
+        background-color: #0E1117;
+        background-image: linear-gradient(160deg, #1a1a2e 0%, #0E1117 100%);
     }
     div[data-testid="stMetricValue"] {
         font-size: 2.5rem;
