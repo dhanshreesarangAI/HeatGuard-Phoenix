@@ -24,6 +24,7 @@ st.markdown("""
     }
     </style>
 """   , unsafe_allow_html=True)
+
 # Load data
 df = pd.read_csv("phoenix_heat_data_with_risk.csv")
 
@@ -47,6 +48,15 @@ RISK_COLORS = {
 # Header
 st.title("🌡️ HeatGuard Phoenix")
 st.markdown("### AI-Powered Hyperlocal Heat Risk Prediction for Phoenix, Arizona")
+
+col_a, col_b, col_c = st.columns(3)
+with col_a:
+    st.info("📍 **5 Phoenix Areas** Monitored")
+with col_b:
+    st.info("🛰️ **2m Resolution** Data via FortyGuard")
+with col_c:
+    st.info("🤖 **AI-Powered** Risk Predictions")
+
 st.markdown("---")
 
 # Layout: two columns
