@@ -4,7 +4,26 @@ import folium
 from streamlit_folium import st_folium
 
 st.set_page_config(page_title="HeatGuard Phoenix", page_icon="🌡️", layout="wide")
-
+st.markdown("""
+    <style>
+    .main {
+        padding-top: 1rem;
+    }
+    div[data-testid="stMetricValue"] {
+        font-size: 2.5rem;
+        color: #FF6B35;
+    }
+    .stButton>button {
+        border-radius: 10px;
+    }
+    h1 {
+        color: #FF6B35;
+    }
+    div[data-testid="stExpander"] {
+        border-radius: 10px;
+    }
+    </style>
+"""   , unsafe_allow_html=True)
 # Load data
 df = pd.read_csv("phoenix_heat_data_with_risk.csv")
 
